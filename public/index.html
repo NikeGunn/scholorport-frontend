@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholarport - Find Your Perfect University</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#E6F3FF',
+              100: '#CCE7FF',
+              500: '#0066CC',
+              600: '#0052A3',
+              700: '#003D7A'
+            },
+            secondary: {
+              50: '#F0F9FF',
+              100: '#E0F2FE',
+              500: '#0EA5E9'
+            },
+            success: '#00B050',
+            warning: '#FF9500',
+            chat: {
+              bg: '#F8FAFC',
+              bot: '#E6F3FF',
+              user: '#0066CC'
+            }
+          },
+          fontFamily: {
+            'inter': ['Inter', 'system-ui', 'sans-serif']
+          },
+          animation: {
+            'fadeIn': 'fadeIn 0.5s ease-in-out',
+            'slideUp': 'slideUp 0.5s ease-out',
+            'typing': 'typing 1.5s ease-in-out infinite',
+            'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            typing: {
+              '0%, 60%, 100%': { opacity: '0' },
+              '30%': { opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- React and ReactDOM CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel Standalone for JSX compilation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .chat-message {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .bot-typing::after {
+      content: '●●●';
+      animation: typing 1.5s ease-in-out infinite;
+      color: #0066CC;
+    }
+
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%);
+    }
+
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 102, 204, 0.2);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- Load API Services -->
+  <script src="./src/services/api.js"></script>
+  
+  <!-- Load UI Components -->
+  <script src="./src/components/ui/Button.js"></script>
+  <script src="./src/components/ui/Header.js"></script>
+  <script src="./src/components/ui/Footer.js"></script>
+  <script src="./src/components/ui/Components.js"></script>
+
+  <!-- Load the React application -->
+  <script src="./src/main.js"></script>
+</body>
+
+</html>

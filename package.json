@@ -1,0 +1,28 @@
+{
+  "name": "scholarport-frontend",
+  "version": "1.0.0",
+  "description": "Scholarport Frontend Application - AI-powered study abroad advisor",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 3000 -c-1 --cors",
+    "start": "npx http-server -p 3000 -c-1 --cors",
+    "build": "echo 'Build complete - static files ready'",
+    "serve": "npx http-server -p 3000 -c-1 --cors"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "keywords": [
+    "scholarport",
+    "study-abroad",
+    "education",
+    "ai-advisor",
+    "university-search"
+  ],
+  "author": "Scholarport Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/scholarport-frontend"
+  }
+}

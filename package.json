@@ -7,7 +7,17 @@
     "dev": "npx http-server -p 3000 -c-1 --cors",
     "start": "npx http-server -p 3000 -c-1 --cors",
     "build": "echo 'Build complete - static files ready'",
-    "serve": "npx http-server -p 3000 -c-1 --cors"
+    "serve": "npx http-server -p 3000 -c-1 --cors",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:dev:build": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:prod:build": "docker-compose -f docker-compose.prod.yml up -d --build",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:win": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1",
+    "update": "bash scripts/update.sh",
+    "update:win": "powershell -ExecutionPolicy Bypass -File scripts/update.ps1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

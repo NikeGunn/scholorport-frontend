@@ -1,0 +1,12 @@
+# Do not commit these files to version control
+
+# Private keys
+*.pem
+
+# SSL certificates
+ssl/
+
+# Environment variables
+.env
+.env.production
+.env.development

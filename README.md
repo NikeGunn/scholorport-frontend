@@ -1,8 +1,46 @@
-# Scholarport Frontend - React + CDN Version
+# Scholarport Frontend
 
-A modern, responsive chatbot interface for Scholarport's AI-powered university recommendation system. Built with React (CDN), Tailwind CSS, and optimized for mobile-first experience.
+A modern, responsive chatbot interface for Scholarport's AI-powered university recommendation system. Built with React (CDN), Tailwind CSS, and optimized for mobile-first experience. Fully dockerized with production-ready deployment scripts.
+
+## 🎉 NEW: Complete Deployment System
+
+**Your app is now production-ready with one-command deployment!**
+
+### Quick Deploy (5 minutes)
+```powershell
+# Windows
+.\scripts\deploy.ps1
+
+# Linux/Mac
+./scripts/deploy.sh
+```
+
+### Quick Update (30 seconds)
+```powershell
+# After making code changes
+.\scripts\update.ps1    # Windows
+./scripts/update.sh     # Linux/Mac
+```
+
+**That's it!** Your changes are live! ✨
+
+## 📚 Documentation
+
+- **[🎓 Getting Started](./GETTING-STARTED.md)** ⭐ **START HERE** - Beginner's guide
+- **[📖 Documentation Index](./INDEX.md)** - Complete documentation guide
+- **[⚡ Quick Start](./QUICK-START.md)** - Daily reference (most used!)
+- **[🚀 Deployment Guide](./DEPLOYMENT.md)** - Complete deployment instructions
+- **[🐳 Docker Guide](./DOCKER.md)** - Docker usage and troubleshooting
+- **[🏗️ Architecture](./ARCHITECTURE.md)** - System architecture overview
+- **[💻 Commands](./COMMANDS.md)** - Command reference cheat sheet
+- **[✅ Checklist](./CHECKLIST.md)** - Deployment verification checklist
+- **[📋 Implementation Complete](./IMPLEMENTATION-COMPLETE.md)** - What was built
+
+**Total Documentation: 26,000+ words covering everything you need!**
 
 ## 🚀 Quick Start
+
+### Local Development (Without Docker)
 
 Since this project uses CDN imports instead of npm packages to avoid installation issues, you can run it directly in any modern browser.
 
@@ -25,16 +63,77 @@ python -m SimpleHTTPServer 8000
 # Open browser to http://localhost:8000
 ```
 
-### Method 3: Node.js HTTP Server
+### Method 3: Node.js HTTP Server (Recommended for Development)
 ```bash
-# Install http-server globally (if not already installed)
-npm install -g http-server
+# Install dependencies
+npm install
 
-# Navigate to project directory and start server
-cd scholarport-frontend
-http-server -p 8000
+# Start development server
+npm start
 
-# Open browser to http://localhost:8000
+# Open browser to http://localhost:3000
+```
+
+### Method 4: Docker (For Production-like Environment)
+```bash
+# Start development container
+npm run docker:dev
+
+# Or with rebuild
+npm run docker:dev:build
+
+# Access at http://localhost:3000
+```
+
+## 🚢 Production Deployment
+
+### Quick Deploy to EC2
+
+**Windows:**
+```powershell
+# Run deployment script
+npm run deploy:win
+```
+
+**Linux/Mac:**
+```bash
+# Run deployment script
+npm run deploy
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+### Docker Production Mode
+```bash
+# Build and start production containers
+npm run docker:prod:build
+
+# View logs
+npm run docker:logs
+
+# Access at http://localhost
+```
+
+## 📚 Documentation
+
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Complete deployment guide for EC2
+- **[DOCKER.md](./DOCKER.md)** - Docker usage and troubleshooting
+
+## 🔧 Environment Configuration
+
+The application automatically detects the environment:
+
+- **Development** (localhost): Uses `http://127.0.0.1:8000/api/chat`
+- **Production** (EC2/domain): Uses production backend URL
+
+Configuration files:
+- `config.js` - Main configuration (auto-detection)
+- `.env.development` - Local development settings
+- `.env.production` - Production settings
+
+Update backend URL in `.env.production`:
+```env
+API_BASE_URL=http://ec2-13-203-155-163.ap-south-1.compute.amazonaws.com/api/chat
 ```
 
 ## 📁 Project Structure
@@ -106,13 +205,38 @@ scholarport-frontend/
 - Hover lift effects for interactive elements
 - Typing indicator with animated dots
 
+## � Available Scripts
+
+```bash
+# Development
+npm start              # Start development server (port 3000)
+npm run dev           # Same as start
+
+# Docker Development
+npm run docker:dev          # Start dev container
+npm run docker:dev:build    # Build and start dev container
+
+# Docker Production
+npm run docker:prod         # Start production container
+npm run docker:prod:build   # Build and start production
+
+# Deployment
+npm run deploy        # Deploy to EC2 (Linux/Mac)
+npm run deploy:win    # Deploy to EC2 (Windows)
+npm run update        # Quick update to production (Linux/Mac)
+npm run update:win    # Quick update to production (Windows)
+
+# Docker Management
+npm run docker:stop   # Stop all containers
+npm run docker:logs   # View container logs
+```
+
 ## 🔧 Backend Integration
 
-The frontend is designed to integrate with the Django backend API. Update the API base URL in `src/services/api.ts`:
+The frontend integrates with the Django backend API. Configuration is automatic based on environment:
 
-```javascript
-const API_BASE_URL = 'http://127.0.0.1:8000/api/chat';
-```
+- **Development**: `http://127.0.0.1:8000/api/chat`
+- **Production**: `http://ec2-13-203-155-163.ap-south-1.compute.amazonaws.com/api/chat`
 
 ### API Endpoints Used
 - `POST /start/` - Initialize conversation
@@ -160,16 +284,46 @@ The application is built mobile-first with responsive breakpoints:
 - ✅ Safari 14+
 - ✅ Edge 90+
 
+## 🏗️ Technology Stack
+
+- **Frontend Framework**: React 18 (CDN)
+- **Styling**: Tailwind CSS 3
+- **Icons**: Lucide Icons
+- **HTTP Server**: Node.js http-server (dev) / Nginx (prod)
+- **Container**: Docker + Docker Compose
+- **Web Server**: Nginx with SSL support
+- **SSL**: Let's Encrypt (Certbot)
+- **Deployment**: AWS EC2 + Systemd
+
+## 🔄 Development Workflow
+
+1. **Local Development**
+   ```bash
+   npm start
+   ```
+
+2. **Make Changes** to files in `public/` or `src/`
+
+3. **Test Locally** - Changes reflect immediately
+
+4. **Quick Update to Production**
+   ```bash
+   npm run update:win   # Windows
+   # or
+   npm run update       # Linux/Mac
+   ```
+
+That's it! Your changes are live in ~30 seconds.
+
 ## 🔄 Future Enhancements
 
 ### Phase 2 Features
-- [ ] Real API integration with Django backend
-- [ ] Data consent form with GDPR compliance
 - [ ] Enhanced guided suggestions
 - [ ] AI processing feedback display
-- [ ] University filtering and search
+- [ ] Advanced university filtering
 - [ ] Application tracking
 - [ ] Multi-language support
+- [ ] User dashboard
 
 ### Technical Improvements
 - [ ] Bundle optimization
@@ -177,6 +331,7 @@ The application is built mobile-first with responsive breakpoints:
 - [ ] Advanced error handling
 - [ ] Analytics integration
 - [ ] SEO optimization
+- [ ] Automated testing
 
 ## 🛠️ Development Notes
 

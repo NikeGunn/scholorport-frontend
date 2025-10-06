@@ -1,5 +1,11 @@
 // API Configuration
-const API_BASE_URL = 'http://127.0.0.1:8000/api/chat';
+// Use global config from config.js or fallback to localhost for development
+const API_BASE_URL = (window.SCHOLARPORT_CONFIG && window.SCHOLARPORT_CONFIG.API_BASE_URL)
+    || 'http://127.0.0.1:8000/api/chat';
+
+// Log which API URL is being used
+console.log('🔧 API Service initialized with base URL:', API_BASE_URL);
+console.log('🌍 Environment:', window.SCHOLARPORT_CONFIG?.ENV || 'not configured');
 
 // Generic API client with error handling
 class APIClient {

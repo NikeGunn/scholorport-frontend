@@ -21,6 +21,7 @@ class APIClient {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
+            credentials: 'include',  // Include cookies for CORS requests
             ...options
         };
 

@@ -49,7 +49,7 @@ npm run docker:dev          # Start in Docker container
 ### Setup SSL (One-Time)
 ```bash
 # SSH to server first
-ssh -i scholorport-frontend.pem ubuntu@ec2-43-205-213-103.ap-south-1.compute.amazonaws.com
+ssh -i scholarport-frontend.pem ubuntu@ec2-13-232-108-169.ap-south-1.compute.amazonaws.com
 
 # Then run SSL setup
 cd ~/scholarport-frontend
@@ -59,12 +59,12 @@ cd ~/scholarport-frontend
 ## 🔗 Important URLs
 
 ### Production
-- **IP**: http://43.205.213.103
-- **DNS**: http://ec2-43-205-213-103.ap-south-1.compute.amazonaws.com
+- **IP**: http://13.232.108.169
+- **DNS**: http://ec2-13-232-108-169.ap-south-1.compute.amazonaws.com
 - **After SSL**: https://your-domain.com
 
 ### Backend API
-- http://ec2-13-203-155-163.ap-south-1.compute.amazonaws.com/api/chat
+- http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat
 
 ### Local Development
 - http://localhost:3000
@@ -77,7 +77,7 @@ ssh -i "scholorport-frontend.pem" ubuntu@ec2-43-205-213-103.ap-south-1.compute.a
 ```
 
 ### Instance Details
-- **Instance ID**: i-098ed04de82cadf82
+- **Instance ID**: i-0dc69a47de6103123
 - **Name**: scholorport-frontend
 - **User**: ubuntu
 - **Region**: ap-south-1

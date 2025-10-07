@@ -70,7 +70,7 @@ status:
 ssl:
 	@echo "Setting up SSL certificate..."
 	@echo "Note: This must be run on the EC2 server"
-	@ssh -i scholorport-frontend.pem ubuntu@ec2-43-205-213-103.ap-south-1.compute.amazonaws.com "cd ~/scholarport-frontend && ./scripts/setup-ssl.sh"
+	@ssh -i scholorport-frontend.pem ubuntu@ec2-13-232-108-169.ap-south-1.compute.amazonaws.com "cd ~/scholarport-frontend && ./scripts/setup-ssl.sh"
 
 # Maintenance
 clean:
@@ -83,8 +83,8 @@ clean-all:
 
 # SSH to production server
 ssh:
-	@ssh -i scholorport-frontend.pem ubuntu@ec2-43-205-213-103.ap-south-1.compute.amazonaws.com
+	@ssh -i scholorport-frontend.pem ubuntu@ec2-13-232-108-169.ap-south-1.compute.amazonaws.com
 
 # Test SSH connection
 test-connection:
-	@ssh -i scholorport-frontend.pem ubuntu@ec2-43-205-213-103.ap-south-1.compute.amazonaws.com "echo 'Connection successful!'"
+	@ssh -i scholorport-frontend.pem ubuntu@ec2-13-232-108-169.ap-south-1.compute.amazonaws.com "echo 'Connection successful!'"

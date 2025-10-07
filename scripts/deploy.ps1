@@ -6,9 +6,9 @@ param(
 )
 
 # Configuration
-$EC2_HOST = "ec2-43-205-213-103.ap-south-1.compute.amazonaws.com"
+$EC2_HOST = "ec2-13-232-108-169.ap-south-1.compute.amazonaws.com"
 $EC2_USER = "ubuntu"
-$PEM_FILE = "scholorport-frontend.pem"
+$PEM_FILE = "scholarport-frontend.pem"
 $APP_DIR = "/home/ubuntu/scholarport-frontend"
 
 Write-Host ""
@@ -99,10 +99,10 @@ Write-Host "[SUCCESS] Deployment completed!" -ForegroundColor Green
 Write-Host ""
 Write-Host "Your application is now running at:" -ForegroundColor Cyan
 Write-Host "  * http://$EC2_HOST" -ForegroundColor White
-Write-Host "  * http://43.205.213.103" -ForegroundColor White
+Write-Host "  * http://13.232.108.169" -ForegroundColor White
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
-Write-Host "  1. Configure your domain DNS to point to 43.205.213.103" -ForegroundColor White
+Write-Host "  1. Configure your domain DNS to point to 13.232.108.169" -ForegroundColor White
 Write-Host "  2. SSH to EC2 and run: bash ~/scholarport-frontend/scripts/setup-ssl.sh" -ForegroundColor White
 Write-Host "  3. View logs: .\scripts\logs.ps1" -ForegroundColor White
 Write-Host ""

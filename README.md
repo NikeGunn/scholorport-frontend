@@ -133,7 +133,7 @@ Configuration files:
 
 Update backend URL in `.env.production`:
 ```env
-API_BASE_URL=http://ec2-13-203-155-163.ap-south-1.compute.amazonaws.com/api/chat
+API_BASE_URL=http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat
 ```
 
 ## 📁 Project Structure

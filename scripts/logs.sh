@@ -6,9 +6,9 @@
 ##############################################################################
 
 # Configuration
-EC2_HOST="ec2-43-205-213-103.ap-south-1.compute.amazonaws.com"
+EC2_HOST="ec2-13-232-108-169.ap-south-1.compute.amazonaws.com"
 EC2_USER="ubuntu"
-PEM_FILE="scholorport-frontend.pem"
+PEM_FILE="scholarport-frontend.pem"
 APP_DIR="/home/ubuntu/scholarport-frontend"
 
 # Colors

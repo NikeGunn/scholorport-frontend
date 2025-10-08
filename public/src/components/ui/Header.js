@@ -1,9 +1,9 @@
 // Header component for Scholarport
 function Header(props) {
     const { showBackButton = false, onBack } = props;
-
+  
     return React.createElement('header', {
-        className: 'bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50'
+        className: 'bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 py-3'
     },
         React.createElement('div', {
             className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'
@@ -25,20 +25,30 @@ function Header(props) {
                         })
                     ),
                     // Logo and brand
-                    React.createElement('div', {
-                        className: 'flex items-center'
-                    },
-                        React.createElement('div', {
-                            className: 'w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3'
-                        },
-                            React.createElement('span', {
-                                className: 'text-white font-bold text-lg'
-                            }, 'S')
-                        ),
-                        React.createElement('h1', {
-                            className: 'text-xl font-bold text-gray-900'
-                        }, 'Scholarport')
-                    )
+
+                        React.createElement('a', {href:"/", className: 'flex items-center' },
+                            React.createElement('img', {
+                                src: "./image/mainLogo.png" ,
+                                alt: 'Scholarport logo',
+                                className: 'h-11 w-auto object-cover'
+                            }),
+                        )
+
+
+                    // React.createElement('div', {
+                    //     className: 'flex items-center'
+                    // },
+                    //     React.createElement('div', {
+                    //         className: 'w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3'
+                    //     },
+                    //         React.createElement('span', {
+                    //             className: 'text-white font-bold text-lg'
+                    //         }, 'S')
+                    //     ),
+                    //     React.createElement('h1', {
+                    //         className: 'text-xl font-bold text-gray-900'
+                    //     }, 'Scholarport')
+                    // )
                 ),
 
                 // Right side - Navigation or actions

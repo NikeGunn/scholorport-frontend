@@ -40,97 +40,97 @@ function useRouter() {
 }
 
 // Landing Page Component
-function LandingPage() {
-    return React.createElement('div', {
-        className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'
-    },
-        // Header
-        React.createElement(Header),
+// function LandingPage() {
+//     return React.createElement('div', {
+//         className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'
+//     },
+//         // Header
+//         React.createElement(Header),
 
-        // Hero Section
-        React.createElement('main', {
-            className: 'flex-1'
-        },
-            React.createElement('div', {
-                className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'
-            },
-                React.createElement('div', {
-                    className: 'text-center'
-                },
-                    React.createElement('h1', {
-                        className: 'text-4xl md:text-6xl font-bold text-gray-900 mb-6 animate-fadeIn'
-                    }, 'Find Your Perfect University'),
-                    React.createElement('p', {
-                        className: 'text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fadeIn'
-                    }, 'AI-powered study abroad guidance. Get personalized university recommendations in just 3 minutes with our intelligent chatbot.'),
-                    React.createElement('div', {
-                        className: 'animate-slideUp'
-                    },
-                        React.createElement('div', {
-                            className: 'flex flex-col sm:flex-row gap-4 justify-center mb-8'
-                        },
-                            React.createElement(Button, {
-                                onClick: () => navigate('#chat'),
-                                size: 'lg'
-                            }, 'Start Your Journey'),
-                            React.createElement(Button, {
-                                onClick: () => navigate('#universities'),
-                                size: 'lg',
-                                variant: 'outline'
-                            }, 'Browse Universities')
-                        ),
-                        React.createElement('p', {
-                            className: 'text-sm text-gray-500'
-                        }, '✓ Free consultation ✓ AI-powered matching ✓ 243+ universities')
-                    )
-                )
-            ),
+//         // Hero Section
+//         React.createElement('main', {
+//             className: 'flex-1 '
+//         },
+//             React.createElement('div', {
+//                 className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'
+//             },
+//                 React.createElement('div', {
+//                     className: 'text-center'
+//                 },
+//                     React.createElement('h1', {
+//                         className: 'font-primary text-4xl md:text-6xl font-bold text-gray-900 mb-6 animate-fadeIn'
+//                     }, 'Find Your Perfect University'),
+//                     React.createElement('p', {
+//                         className: 'text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fadeIn'
+//                     }, 'AI-powered study abroad guidance. Get personalized university recommendations in just 3 minutes with our intelligent chatbot.'),
+//                     React.createElement('div', {
+//                         className: 'animate-slideUp'
+//                     },
+//                         React.createElement('div', {
+//                             className: 'flex flex-col sm:flex-row gap-4 justify-center mb-8'
+//                         },
+//                             React.createElement(Button, {
+//                                 onClick: () => navigate('#chat'),
+//                                 size: 'lg'
+//                             }, 'Start Your Journey'),
+//                             React.createElement(Button, {
+//                                 onClick: () => navigate('#universities'),
+//                                 size: 'lg',
+//                                 variant: 'outline'
+//                             }, 'Browse Universities')
+//                         ),
+//                         React.createElement('p', {
+//                             className: 'text-sm text-gray-500'
+//                         }, '✓ Free consultation ✓ AI-powered matching ✓ 243+ universities')
+//                     )
+//                 )
+//             ),
 
-            // Stats Section
-            React.createElement('div', {
-                className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'
-            },
-                React.createElement('div', {
-                    className: 'grid grid-cols-1 md:grid-cols-3 gap-8 text-center'
-                },
-                    React.createElement('div', {
-                        className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
-                    },
-                        React.createElement('div', {
-                            className: 'text-3xl font-bold text-primary-500 mb-2'
-                        }, '243+'),
-                        React.createElement('p', {
-                            className: 'text-gray-600'
-                        }, 'Partner Universities')
-                    ),
-                    React.createElement('div', {
-                        className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
-                    },
-                        React.createElement('div', {
-                            className: 'text-3xl font-bold text-primary-500 mb-2'
-                        }, '50+'),
-                        React.createElement('p', {
-                            className: 'text-gray-600'
-                        }, 'Countries Covered')
-                    ),
-                    React.createElement('div', {
-                        className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
-                    },
-                        React.createElement('div', {
-                            className: 'text-3xl font-bold text-primary-500 mb-2'
-                        }, '3 min'),
-                        React.createElement('p', {
-                            className: 'text-gray-600'
-                        }, 'Average Completion Time')
-                    )
-                )
-            )
-        ),
+//             // Stats Section
+//             React.createElement('div', {
+//                 className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'
+//             },
+//                 React.createElement('div', {
+//                     className: 'grid grid-cols-1 md:grid-cols-3 gap-8 text-center'
+//                 },
+//                     React.createElement('div', {
+//                         className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
+//                     },
+//                         React.createElement('div', {
+//                             className: 'text-3xl font-bold text-primary-500 mb-2'
+//                         }, '243+'),
+//                         React.createElement('p', {
+//                             className: 'text-gray-600'
+//                         }, 'Partner Universities')
+//                     ),
+//                     React.createElement('div', {
+//                         className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
+//                     },
+//                         React.createElement('div', {
+//                             className: 'text-3xl font-bold text-primary-500 mb-2'
+//                         }, '50+'),
+//                         React.createElement('p', {
+//                             className: 'text-gray-600'
+//                         }, 'Countries Covered')
+//                     ),
+//                     React.createElement('div', {
+//                         className: 'bg-white rounded-lg p-6 shadow-lg hover-lift'
+//                     },
+//                         React.createElement('div', {
+//                             className: 'text-3xl font-bold text-primary-500 mb-2'
+//                         }, '3 min'),
+//                         React.createElement('p', {
+//                             className: 'text-gray-600'
+//                         }, 'Average Completion Time')
+//                     )
+//                 )
+//             )
+//         ),
 
-        // Footer
-        React.createElement(Footer)
-    );
-}
+//         // Footer
+//         React.createElement(Footer)
+//     );
+// }
 
 // Chat Page Component
 function ChatPage() {

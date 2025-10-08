@@ -8,6 +8,7 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
 
   <!-- Tailwind Configuration -->
   <script>
@@ -36,7 +37,9 @@
             }
           },
           fontFamily: {
-            'inter': ['Inter', 'system-ui', 'sans-serif']
+            // 'inter': ['Inter', 'system-ui', 'sans-serif']
+            primary: ['Manrope', 'sans-serif'],
+            secondary: ['Work Sans', 'sans-serif']
           },
           animation: {
             'fadeIn': 'fadeIn 0.5s ease-in-out',
@@ -64,7 +67,9 @@
   </script>
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -118,6 +123,13 @@
     /* Scrollbar styling */
     ::-webkit-scrollbar {
       width: 8px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+    }
+    p, span, li, a {
+      font-family: 'Work Sans', sans-serif;
     }
 
     ::-webkit-scrollbar-track {

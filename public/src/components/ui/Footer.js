@@ -15,19 +15,15 @@ function Footer() {
                 React.createElement('div', {
                     className: 'col-span-1 md:col-span-2'
                 },
-                    React.createElement('div', {
+                    React.createElement('a', {
+                        href: '/',
                         className: 'flex items-center mb-4'
                     },
-                        React.createElement('div', {
-                            className: 'w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3'
-                        },
-                            React.createElement('span', {
-                                className: 'text-white font-bold text-lg'
-                            }, 'S')
-                        ),
-                        React.createElement('h3', {
-                            className: 'text-lg font-bold text-gray-900'
-                        }, 'Scholarport')
+                        React.createElement('img', {
+                            src: './image/mainLogo.png',
+                            alt: 'Scholarport logo',
+                            className: 'h-11 w-auto object-cover'
+                        })
                     ),
                     React.createElement('p', {
                         className: 'text-gray-600 mb-4'

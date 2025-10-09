@@ -67,10 +67,10 @@ function LandingPage() {
                     className: 'text-center'
                 },
                     React.createElement('h1', {
-                        className: 'text-4xl md:text-6xl font-bold text-gray-900 mb-6 animate-fadeIn'
+                        className: 'text-4xl md:text-6xl font-bold text-gray-900 mb-6 animate-fadeIn font-primary'
                     }, 'Find Your Perfect University'),
                     React.createElement('p', {
-                        className: 'text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fadeIn'
+                        className: 'text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fadeIn font-secondary'
                     }, 'AI-powered study abroad guidance. Get personalized university recommendations in just 3 minutes with our intelligent chatbot.'),
                     React.createElement('div', {
                         className: 'animate-slideUp'

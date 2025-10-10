@@ -18,7 +18,7 @@
     const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration
-    // Direct backend URL - backend must support HTTPS or CORS for this to work
+    // Use nginx proxy when on custom domain to avoid SSL certificate issues
     const API_CONFIG = {
         development: {
             BASE_URL: 'http://127.0.0.1:8000/api/chat',
@@ -26,15 +26,19 @@
             ENV: 'development'
         },
         production: {
-            // Always use direct backend URL with HTTPS (IP-based)
-            BASE_URL: 'https://43.205.95.162/api/chat',
-            WS_URL: 'wss://43.205.95.162/ws',
+            // Use nginx proxy on custom domain, direct URL when on IP
+            BASE_URL: isCustomDomain
+                ? `${protocol}//${hostname}/api/chat`
+                : 'https://43.205.95.162/api/chat',
+            WS_URL: isCustomDomain
+                ? `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`
+                : 'wss://43.205.95.162/ws',
             ENV: 'production',
             BACKEND_IP: '43.205.95.162',
-            BACKEND_HOST: '43.205.95.162',
+            BACKEND_HOST: isCustomDomain ? hostname : '43.205.95.162',
             FRONTEND_DOMAIN: isCustomDomain ? hostname : null,
-            USE_HTTPS: true,
-            USE_DIRECT_BACKEND: true
+            USE_HTTPS: useHTTPS,
+            USE_PROXY: isCustomDomain
         }
     };
 
@@ -49,8 +53,8 @@
     }
     if (isCustomDomain) {
         console.log('%c🌐 Custom Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
-        if (currentConfig.USE_DIRECT_BACKEND) {
-            console.log('%c� Using Direct Backend URL: ' + currentConfig.BACKEND_HOST, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+        if (currentConfig.USE_PROXY) {
+            console.log('%c🔄 Using Nginx Proxy - Avoiding SSL certificate issues', 'color: #0066CC; font-size: 14px; font-weight: bold;');
         }
     }
 

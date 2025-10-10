@@ -18,8 +18,7 @@
     const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration
-    // When using custom domain with HTTPS, use nginx proxy (same domain for API)
-    // This avoids mixed content issues (HTTPS frontend calling HTTP backend)
+    // Direct backend URL - backend must support HTTPS or CORS for this to work
     const API_CONFIG = {
         development: {
             BASE_URL: 'http://127.0.0.1:8000/api/chat',
@@ -27,18 +26,15 @@
             ENV: 'development'
         },
         production: {
-            // Use nginx proxy when on custom domain (avoids mixed content blocking)
-            BASE_URL: isCustomDomain
-                ? `${protocol}//${hostname}/api/chat`
-                : 'http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat',
-            WS_URL: isCustomDomain
-                ? `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`
-                : 'ws://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws',
+            // Always use direct backend URL with HTTPS (IP-based)
+            BASE_URL: 'https://43.205.95.162/api/chat',
+            WS_URL: 'wss://43.205.95.162/ws',
             ENV: 'production',
             BACKEND_IP: '43.205.95.162',
+            BACKEND_HOST: '43.205.95.162',
             FRONTEND_DOMAIN: isCustomDomain ? hostname : null,
-            USE_HTTPS: useHTTPS,
-            USE_PROXY: isCustomDomain
+            USE_HTTPS: true,
+            USE_DIRECT_BACKEND: true
         }
     };
 
@@ -53,8 +49,8 @@
     }
     if (isCustomDomain) {
         console.log('%c🌐 Custom Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
-        if (currentConfig.USE_PROXY) {
-            console.log('%c🔄 Using Nginx Proxy - API calls go through ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+        if (currentConfig.USE_DIRECT_BACKEND) {
+            console.log('%c� Using Direct Backend URL: ' + currentConfig.BACKEND_HOST, 'color: #0066CC; font-size: 14px; font-weight: bold;');
         }
     }
 

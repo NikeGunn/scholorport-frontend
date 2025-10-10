@@ -52,14 +52,16 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY public/ /usr/share/nginx/html/
 COPY config.js /usr/share/nginx/html/config.js
 
-# Create necessary directories
-RUN mkdir -p /var/cache/nginx /var/log/nginx /etc/nginx/ssl /var/www/certbot
+# Create necessary directories with full path for SSL
+RUN mkdir -p /var/cache/nginx /var/log/nginx /etc/nginx/ssl/live/scholarport.co /var/www/certbot
 
-# Set proper permissions
+# Set proper permissions (including SSL directory)
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
   chown -R nginx:nginx /var/cache/nginx && \
   chown -R nginx:nginx /var/log/nginx && \
-  chmod -R 755 /usr/share/nginx/html
+  chown -R nginx:nginx /etc/nginx/ssl && \
+  chmod -R 755 /usr/share/nginx/html && \
+  chmod -R 755 /etc/nginx/ssl
 
 # Expose ports
 EXPOSE 80 443

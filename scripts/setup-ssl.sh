@@ -19,13 +19,15 @@ EC2_HOST="ec2-13-232-108-169.ap-south-1.compute.amazonaws.com"
 EC2_USER="ubuntu"
 PEM_FILE="scholarport-frontend.pem"
 APP_DIR="/home/ubuntu/scholarport-frontend"
+DEFAULT_DOMAIN="scholarport.co"
 
 # Prompt for domain information
 echo -e "${BLUE}=========================================="
 echo "  SSL Certificate Setup"
 echo "==========================================${NC}"
 echo ""
-read -p "Enter your domain name (e.g., scholarport.com): " DOMAIN
+read -p "Enter your domain name (default: $DEFAULT_DOMAIN): " DOMAIN
+DOMAIN=${DOMAIN:-$DEFAULT_DOMAIN}
 read -p "Enter your email address for SSL notifications: " EMAIL
 
 echo ""
@@ -65,23 +67,24 @@ ssh -i "$PEM_FILE" "$EC2_USER@$EC2_HOST" << EOF
     sudo cp /etc/letsencrypt/live/$DOMAIN/chain.pem ssl/live/$DOMAIN/
     sudo chown -R ubuntu:ubuntu ssl
 
-    # Update nginx configuration
-    sed -i "s/your-domain.com/$DOMAIN/g" nginx/default.conf
+    # Update nginx configuration (domain should already be set to scholarport.co)
+    echo "Nginx configuration already set for $DOMAIN"
 
-    # Uncomment HTTPS server block
-    sed -i 's/^# server {/server {/' nginx/default.conf
-    sed -i 's/^#     /    /' nginx/default.conf
-    sed -i 's/^# }/}/' nginx/default.conf
+    # Uncomment HTTPS server block in nginx/default.conf
+    sed -i '/^# server {/,/^# }/ s/^# //' nginx/default.conf | head -1
 
-    # Comment out HTTP serving, enable redirect
-    sed -i 's/^    location \/ {/    # location \/ {/' nginx/default.conf
-    sed -i 's/^        root/        # root/' nginx/default.conf
-    sed -i 's/^        index/        # index/' nginx/default.conf
-    sed -i 's/^        try_files/        # try_files/' nginx/default.conf
-    sed -i 's/^    }/    # }/' nginx/default.conf
-    sed -i 's/^    # location \/ {/    location \/ {/' nginx/default.conf
+    # Enable HTTPS redirect in HTTP server block
+    sed -i 's/^    # location \/ {$/    location \/ {/' nginx/default.conf
     sed -i 's/^    #     return 301/        return 301/' nginx/default.conf
-    sed -i 's/^    # }/    }/' nginx/default.conf
+    sed -i 's/^    # }$/    }/' nginx/default.conf
+
+    # Comment out direct serving in HTTP block (lines 31-38 approximately)
+    sed -i '/Serve frontend application (comment out after SSL setup)/,/try_files \$uri \$uri\/ \/index.html;/ {
+        /location \/ {/s/^/    # /
+        /root \/usr\/share\/nginx\/html;/s/^/        # /
+        /index index.html;/s/^/        # /
+        /try_files/s/^/        # /
+    }' nginx/default.conf
 
     # Restart nginx
     docker-compose -f docker-compose.prod.yml up -d

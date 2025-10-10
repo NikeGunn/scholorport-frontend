@@ -7,10 +7,15 @@
 
     // Detect environment
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
     const isLocalhost = hostname === 'localhost' ||
                        hostname === '127.0.0.1' ||
                        hostname.startsWith('192.168.') ||
                        hostname.startsWith('10.0.');
+    
+    // Check if using custom domain (scholarport.co)
+    const isCustomDomain = hostname === 'scholarport.co' || hostname === 'www.scholarport.co';
+    const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration
     const API_CONFIG = {
@@ -20,10 +25,16 @@
             ENV: 'development'
         },
         production: {
-            BASE_URL: 'http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat',
-            WS_URL: 'ws://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws',
+            BASE_URL: useHTTPS 
+                ? 'https://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat'
+                : 'http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat',
+            WS_URL: useHTTPS
+                ? 'wss://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws'
+                : 'ws://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws',
             ENV: 'production',
-            BACKEND_IP: '43.205.95.162'
+            BACKEND_IP: '43.205.95.162',
+            FRONTEND_DOMAIN: isCustomDomain ? hostname : null,
+            USE_HTTPS: useHTTPS
         }
     };
 
@@ -33,6 +44,12 @@
     // Log current environment with prominent styling
     console.log('%c🌍 Environment: ' + currentConfig.ENV, 'color: #0066CC; font-size: 16px; font-weight: bold;');
     console.log('%c🔗 API Base URL: ' + currentConfig.BASE_URL, 'color: #00B050; font-size: 14px; font-weight: bold;');
+    if (useHTTPS) {
+        console.log('%c🔒 HTTPS Enabled - Secure connection active', 'color: #00B050; font-size: 14px; font-weight: bold;');
+    }
+    if (isCustomDomain) {
+        console.log('%c🌐 Custom Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+    }
 
     // Alert if using old backend
     if (currentConfig.BASE_URL && currentConfig.BASE_URL.includes('13-203-155-163')) {

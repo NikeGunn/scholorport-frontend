@@ -8,7 +8,7 @@ Your setup is complete! Here's what has been configured:
 - **Domain**: scholarport.co
 - **A Record**: Points to `13.232.108.169` (Your EC2 IP)
 - **WWW Subdomain**: CNAME to scholarport.co
-- **Verification**: 
+- **Verification**:
   ```
   scholarport.co → 13.232.108.169
   www.scholarport.co → scholarport.co → 13.232.108.169
@@ -179,7 +179,7 @@ docker exec scholarport-frontend-prod nginx -s reload
 ## 🎯 Post-Deployment Verification Checklist
 
 - [ ] https://scholarport.co loads correctly
-- [ ] https://www.scholarport.co loads correctly  
+- [ ] https://www.scholarport.co loads correctly
 - [ ] http:// URLs redirect to https://
 - [ ] SSL certificate is valid (check in browser)
 - [ ] API calls work correctly

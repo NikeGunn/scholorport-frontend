@@ -184,6 +184,6 @@ When everything is working:
 
 ---
 
-**Need more help?** 
+**Need more help?**
 - Check: SSL-FIX-GUIDE.md (detailed troubleshooting)
 - Or ask me!

@@ -12,12 +12,14 @@
                        hostname === '127.0.0.1' ||
                        hostname.startsWith('192.168.') ||
                        hostname.startsWith('10.0.');
-    
+
     // Check if using custom domain (scholarport.co)
     const isCustomDomain = hostname === 'scholarport.co' || hostname === 'www.scholarport.co';
     const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration
+    // When using custom domain with HTTPS, use nginx proxy (same domain for API)
+    // This avoids mixed content issues (HTTPS frontend calling HTTP backend)
     const API_CONFIG = {
         development: {
             BASE_URL: 'http://127.0.0.1:8000/api/chat',
@@ -25,16 +27,18 @@
             ENV: 'development'
         },
         production: {
-            BASE_URL: useHTTPS 
-                ? 'https://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat'
+            // Use nginx proxy when on custom domain (avoids mixed content blocking)
+            BASE_URL: isCustomDomain
+                ? `${protocol}//${hostname}/api/chat`
                 : 'http://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/api/chat',
-            WS_URL: useHTTPS
-                ? 'wss://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws'
+            WS_URL: isCustomDomain
+                ? `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`
                 : 'ws://ec2-43-205-95-162.ap-south-1.compute.amazonaws.com/ws',
             ENV: 'production',
             BACKEND_IP: '43.205.95.162',
             FRONTEND_DOMAIN: isCustomDomain ? hostname : null,
-            USE_HTTPS: useHTTPS
+            USE_HTTPS: useHTTPS,
+            USE_PROXY: isCustomDomain
         }
     };
 
@@ -49,6 +53,9 @@
     }
     if (isCustomDomain) {
         console.log('%c🌐 Custom Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+        if (currentConfig.USE_PROXY) {
+            console.log('%c🔄 Using Nginx Proxy - API calls go through ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+        }
     }
 
     // Alert if using old backend

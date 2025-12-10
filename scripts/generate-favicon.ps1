@@ -22,23 +22,23 @@ $imageMagick = Get-Command "magick" -ErrorAction SilentlyContinue
 
 if ($imageMagick) {
     Write-Host "[INFO] ImageMagick found! Generating favicons..." -ForegroundColor Green
-    
+
     # Generate 16x16 favicon
     & magick convert $logoPath -resize 16x16 -background white -gravity center -extent 16x16 "$outputDir/favicon-16x16.png"
     Write-Host "  ✓ Created favicon-16x16.png" -ForegroundColor Green
-    
+
     # Generate 32x32 favicon
     & magick convert $logoPath -resize 32x32 -background white -gravity center -extent 32x32 "$outputDir/favicon-32x32.png"
     Write-Host "  ✓ Created favicon-32x32.png" -ForegroundColor Green
-    
+
     # Generate 180x180 Apple touch icon
     & magick convert $logoPath -resize 180x180 -background white -gravity center -extent 180x180 "$outputDir/apple-touch-icon.png"
     Write-Host "  ✓ Created apple-touch-icon.png" -ForegroundColor Green
-    
+
     # Generate favicon.ico (multi-size)
     & magick convert $logoPath -resize 32x32 -background white -gravity center -extent 32x32 "$outputDir/favicon.ico"
     Write-Host "  ✓ Created favicon.ico" -ForegroundColor Green
-    
+
     Write-Host ""
     Write-Host "[SUCCESS] All favicons generated successfully!" -ForegroundColor Green
     Write-Host ""
@@ -46,7 +46,7 @@ if ($imageMagick) {
     Write-Host "  1. Deploy your application: .\scripts\deploy.ps1" -ForegroundColor White
     Write-Host "  2. Clear browser cache (Ctrl+Shift+R)" -ForegroundColor White
     Write-Host "  3. Check your favicon at https://scholarport.co" -ForegroundColor White
-    
+
 } else {
     Write-Host "[INFO] ImageMagick not found. Using alternative method..." -ForegroundColor Yellow
     Write-Host ""
@@ -73,7 +73,7 @@ if ($imageMagick) {
     Write-Host "  2. Or download from: https://imagemagick.org/script/download.php" -ForegroundColor White
     Write-Host "  3. Run this script again" -ForegroundColor White
     Write-Host ""
-    
+
     # Open the HTML tool
     $htmlTool = Resolve-Path "scripts\generate-favicon.html"
     Write-Host "[INFO] Opening favicon generator tool..." -ForegroundColor Cyan

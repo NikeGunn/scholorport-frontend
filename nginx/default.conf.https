@@ -15,7 +15,7 @@ upstream backend_server {
 server {
     listen 80;
     listen [::]:80;
-    server_name scholarport.co www.scholarport.co;
+    server_name chat.scholarport.co;
 
     # Serve challenge files for Let's Encrypt
     location /.well-known/acme-challenge/ {
@@ -40,12 +40,12 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name scholarport.co www.scholarport.co;
+    server_name chat.scholarport.co;
 
     # SSL certificates
-    ssl_certificate /etc/nginx/ssl/live/scholarport.co/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/live/scholarport.co/privkey.pem;
-    ssl_trusted_certificate /etc/nginx/ssl/live/scholarport.co/chain.pem;
+    ssl_certificate /etc/nginx/ssl/live/chat.scholarport.co/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/chat.scholarport.co/privkey.pem;
+    ssl_trusted_certificate /etc/nginx/ssl/live/chat.scholarport.co/chain.pem;
 
     # SSL configuration
     ssl_protocols TLSv1.2 TLSv1.3;

@@ -1,10 +1,10 @@
 #!/bin/bash
 # COPY AND PASTE THIS ENTIRE SCRIPT ON YOUR EC2 SERVER
-# This will setup SSL for scholarport.co completely
+# This will setup SSL for chat.scholarport.co completely
 
 set -e
 
-echo "🚀 Starting SSL Setup for scholarport.co"
+echo "🚀 Starting SSL Setup for chat.scholarport.co"
 echo "========================================="
 
 # Navigate to project
@@ -26,15 +26,14 @@ echo ""
 echo "🔐 Step 3: Obtaining SSL certificate..."
 echo "This may take 1-2 minutes..."
 sudo certbot certonly --standalone \
-    -d scholarport.co \
-    -d www.scholarport.co \
+    -d chat.scholarport.co \
     --non-interactive \
     --agree-tos \
     --email tech.scholarport@gmail.com \
     --preferred-challenges http
 
 # Verify
-if [ ! -f "/etc/letsencrypt/live/scholarport.co/fullchain.pem" ]; then
+if [ ! -f "/etc/letsencrypt/live/chat.scholarport.co/fullchain.pem" ]; then
     echo "❌ Certificate not obtained!"
     echo "Check:"
     echo "1. Port 80 is open in AWS Security Group"
@@ -47,14 +46,14 @@ echo "✅ Certificate obtained!"
 # Step 4: Copy certificates
 echo ""
 echo "📋 Step 4: Copying certificates to project..."
-mkdir -p ssl/live/scholarport.co
-sudo cp /etc/letsencrypt/live/scholarport.co/fullchain.pem ssl/live/scholarport.co/
-sudo cp /etc/letsencrypt/live/scholarport.co/privkey.pem ssl/live/scholarport.co/
-sudo cp /etc/letsencrypt/live/scholarport.co/chain.pem ssl/live/scholarport.co/
+mkdir -p ssl/live/chat.scholarport.co
+sudo cp /etc/letsencrypt/live/chat.scholarport.co/fullchain.pem ssl/live/chat.scholarport.co/
+sudo cp /etc/letsencrypt/live/chat.scholarport.co/privkey.pem ssl/live/chat.scholarport.co/
+sudo cp /etc/letsencrypt/live/chat.scholarport.co/chain.pem ssl/live/chat.scholarport.co/
 sudo chown -R ubuntu:ubuntu ssl
 
 echo "✅ Certificates copied!"
-ls -lh ssl/live/scholarport.co/
+ls -lh ssl/live/chat.scholarport.co/
 
 # Step 5: Enable HTTPS in nginx
 echo ""
@@ -97,7 +96,7 @@ sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy
 sudo tee /etc/letsencrypt/renewal-hooks/deploy/scholarport.sh > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
 cd /home/ubuntu/scholarport-frontend
-sudo cp /etc/letsencrypt/live/scholarport.co/* ssl/live/scholarport.co/ 2>/dev/null || true
+sudo cp /etc/letsencrypt/live/chat.scholarport.co/* ssl/live/chat.scholarport.co/ 2>/dev/null || true
 sudo chown -R ubuntu:ubuntu ssl
 docker-compose -f docker-compose.prod.yml restart scholarport-frontend
 EOFSCRIPT
@@ -115,14 +114,13 @@ echo "✅ SSL SETUP COMPLETE!"
 echo "========================================="
 echo ""
 echo "Your site is now available at:"
-echo "  🔒 https://scholarport.co"
-echo "  🔒 https://www.scholarport.co"
+echo "  🔒 https://chat.scholarport.co"
 echo ""
 echo "Certificate details:"
-sudo openssl x509 -in /etc/letsencrypt/live/scholarport.co/fullchain.pem -noout -dates
+sudo openssl x509 -in /etc/letsencrypt/live/chat.scholarport.co/fullchain.pem -noout -dates
 echo ""
 echo "Next steps:"
-echo "1. Test in browser: https://scholarport.co"
+echo "1. Test in browser: https://chat.scholarport.co"
 echo "2. Verify HTTP redirects to HTTPS"
 echo "3. Check for green padlock in browser"
 echo ""

@@ -23,10 +23,10 @@ const sizes = [
 async function generateFavicons() {
     try {
         console.log('📁 Reading logo:', logoPath);
-        
+
         for (const config of sizes) {
             const outputPath = path.join(outputDir, config.name);
-            
+
             await sharp(logoPath)
                 .resize(config.size, config.size, {
                     fit: 'contain',
@@ -34,17 +34,17 @@ async function generateFavicons() {
                 })
                 .png()
                 .toFile(outputPath);
-            
+
             console.log(`✓ Created ${config.name} (${config.size}x${config.size})`);
         }
-        
+
         console.log('\n✅ All favicons generated successfully!');
         console.log('\nNext steps:');
         console.log('  1. Deploy: .\\scripts\\deploy.ps1');
         console.log('  2. Clear browser cache (Ctrl+Shift+R)');
         console.log('  3. Visit: https://scholarport.co');
         console.log('\n========================================\n');
-        
+
     } catch (error) {
         console.error('❌ Error:', error.message);
         console.log('\nIf Sharp is not installed, run:');

@@ -13,8 +13,8 @@
                        hostname.startsWith('192.168.') ||
                        hostname.startsWith('10.0.');
 
-    // Check if using custom domain (scholarport.co)
-    const isCustomDomain = hostname === 'scholarport.co' || hostname === 'www.scholarport.co';
+    // Check if using custom domain (chat.scholarport.co)
+    const isCustomDomain = hostname === 'chat.scholarport.co' || hostname === 'scholarport.co' || hostname === 'www.scholarport.co';
     const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration

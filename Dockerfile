@@ -53,7 +53,7 @@ COPY public/ /usr/share/nginx/html/
 COPY config.js /usr/share/nginx/html/config.js
 
 # Create necessary directories with full path for SSL
-RUN mkdir -p /var/cache/nginx /var/log/nginx /etc/nginx/ssl/live/scholarport.co /var/www/certbot
+RUN mkdir -p /var/cache/nginx /var/log/nginx /etc/nginx/ssl/live/chat.scholarport.co /var/www/certbot
 
 # Set proper permissions (including SSL directory)
 RUN chown -R nginx:nginx /usr/share/nginx/html && \

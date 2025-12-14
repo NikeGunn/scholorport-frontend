@@ -25,38 +25,32 @@ function Header(props) {
                         })
                     ),
                     // Logo and brand
-
-                        React.createElement('a', {href:"/", className: 'flex items-center' },
-                            React.createElement('img', {
-                                src: "./image/mainLogo.png" ,
-                                alt: 'Scholarport logo',
-                                className: 'h-11 w-auto object-cover'
-                            }),
-                        )
-
-
-                    // React.createElement('div', {
-                    //     className: 'flex items-center'
-                    // },
-                    //     React.createElement('div', {
-                    //         className: 'w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3'
-                    //     },
-                    //         React.createElement('span', {
-                    //             className: 'text-white font-bold text-lg'
-                    //         }, 'S')
-                    //     ),
-                    //     React.createElement('h1', {
-                    //         className: 'text-xl font-bold text-gray-900'
-                    //     }, 'Scholarport')
-                    // )
+                    React.createElement('a', {href:"/", className: 'flex items-center' },
+                        React.createElement('img', {
+                            src: "./image/mainLogo.png" ,
+                            alt: 'Scholarport logo',
+                            className: 'h-11 w-auto object-cover'
+                        })
+                    )
                 ),
 
                 // Right side - Navigation or actions
                 React.createElement('div', {
-                    className: 'flex items-center space-x-4'
+                    className: 'flex items-center space-x-3'
                 },
+                    // Beta Badge - Clean, minimal design
+                    React.createElement('div', {
+                        className: 'flex items-center space-x-1.5 bg-primary-50 border border-primary-200 text-primary-600 px-2.5 py-1 rounded-md'
+                    },
+                        React.createElement('span', {
+                            className: 'w-1.5 h-1.5 bg-primary-500 rounded-full animate-pulse'
+                        }),
+                        React.createElement('span', {
+                            className: 'text-xs font-semibold tracking-wide'
+                        }, 'BETA')
+                    ),
                     React.createElement('span', {
-                        className: 'text-sm text-gray-600 hidden sm:block'
+                        className: 'text-sm text-gray-600 hidden lg:block'
                     }, 'Find Your Perfect University')
                 )
             )

@@ -51,14 +51,14 @@ function useRouter() {
 // Landing Page Component
 function LandingPage() {
     return React.createElement('div', {
-        className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'
+        className: 'min-h-screen flex flex-col'
     },
         // Header
         React.createElement(Header),
 
         // Hero Section
         React.createElement('main', {
-            className: 'flex-1'
+            className: 'flex-1 bg-gradient-to-br from-blue-50 to-indigo-100'
         },
             React.createElement('div', {
                 className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'
@@ -502,7 +502,7 @@ function ChatPage() {
             showConsentDialog && React.createElement(ConsentDialog, {
                 onConsent: handleConsentResponse
             })
-        )
+        ),
     );
 }
 
@@ -748,7 +748,7 @@ function UniversitySearchPage() {
     };
 
     return React.createElement('div', {
-        className: 'min-h-screen bg-gray-50'
+        className: 'min-h-screen flex flex-col'
     },
         React.createElement(Header, {
             showBackButton: true,
@@ -756,72 +756,79 @@ function UniversitySearchPage() {
         }),
 
         React.createElement('div', {
-            className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
+            className: 'flex-1 bg-gray-50'
         },
-            React.createElement('h1', {
-                className: 'text-3xl font-bold text-gray-900 mb-8'
-            }, 'Explore Universities'),
-
-            // Search Filters
-            React.createElement('form', {
-                onSubmit: handleSearch,
-                className: 'bg-white rounded-lg shadow p-6 mb-8'
+            React.createElement('div', {
+                className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
             },
-                React.createElement('div', {
-                    className: 'grid grid-cols-1 md:grid-cols-3 gap-4'
+                React.createElement('h1', {
+                    className: 'text-3xl font-bold text-gray-900 mb-8'
+                }, 'Explore Universities'),
+
+                // Search Filters
+                React.createElement('form', {
+                    onSubmit: handleSearch,
+                    className: 'bg-white rounded-lg shadow p-6 mb-8'
                 },
-                    React.createElement('input', {
-                        type: 'text',
-                        placeholder: 'Search universities...',
-                        value: filters.search,
-                        onChange: (e) => setFilters({ ...filters, search: e.target.value }),
-                        className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
-                    }),
-                    React.createElement('input', {
-                        type: 'text',
-                        placeholder: 'Country (e.g., USA, Canada)...',
-                        value: filters.country,
-                        onChange: (e) => setFilters({ ...filters, country: e.target.value }),
-                        className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
-                    }),
-                    React.createElement(Button, {
-                        type: 'submit',
-                        disabled: loading
-                    }, loading ? 'Searching...' : 'Search')
+                    React.createElement('div', {
+                        className: 'grid grid-cols-1 md:grid-cols-3 gap-4'
+                    },
+                        React.createElement('input', {
+                            type: 'text',
+                            placeholder: 'Search universities...',
+                            value: filters.search,
+                            onChange: (e) => setFilters({ ...filters, search: e.target.value }),
+                            className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
+                        }),
+                        React.createElement('input', {
+                            type: 'text',
+                            placeholder: 'Country (e.g., USA, Canada)...',
+                            value: filters.country,
+                            onChange: (e) => setFilters({ ...filters, country: e.target.value }),
+                            className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
+                        }),
+                        React.createElement(Button, {
+                            type: 'submit',
+                            disabled: loading
+                        }, loading ? 'Searching...' : 'Search')
+                    )
+                ),
+
+                // Error message
+                error && React.createElement('div', {
+                    className: 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'
+                }, error),
+
+                // Loading state
+                loading && React.createElement('div', {
+                    className: 'text-center py-12'
+                }, React.createElement(TypingIndicator)),
+
+                // Universities grid
+                universities.length > 0 && React.createElement('div', {
+                    className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'
+                },
+                    universities.map(university =>
+                        React.createElement(UniversityCard, {
+                            key: university.id,
+                            university: university
+                        })
+                    )
+                ),
+
+                // No results
+                !loading && universities.length === 0 && !error && React.createElement('div', {
+                    className: 'text-center py-12'
+                },
+                    React.createElement('p', {
+                        className: 'text-gray-600 text-lg'
+                    }, 'No universities found. Try adjusting your search criteria.')
                 )
-            ),
-
-            // Error message
-            error && React.createElement('div', {
-                className: 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'
-            }, error),
-
-            // Loading state
-            loading && React.createElement('div', {
-                className: 'text-center py-12'
-            }, React.createElement(TypingIndicator)),
-
-            // Universities grid
-            universities.length > 0 && React.createElement('div', {
-                className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            },
-                universities.map(university =>
-                    React.createElement(UniversityCard, {
-                        key: university.id,
-                        university: university
-                    })
-                )
-            ),
-
-            // No results
-            !loading && universities.length === 0 && !error && React.createElement('div', {
-                className: 'text-center py-12'
-            },
-                React.createElement('p', {
-                    className: 'text-gray-600 text-lg'
-                }, 'No universities found. Try adjusting your search criteria.')
             )
-        )
+        ),
+
+        // Footer
+        React.createElement(Footer)
     );
 }
 

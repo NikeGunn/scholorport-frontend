@@ -16,6 +16,8 @@ import {
 // API Configuration
 const API_BASE_URL = 'http://127.0.0.1:8000/api/chat';
 
+console.log('🔧 API Service initialized with base URL:', API_BASE_URL);
+
 // Generic API client with error handling
 class APIClient {
     private baseURL: string;
@@ -131,14 +133,14 @@ export const universityAPI = {
         if (filters.offset) searchParams.append('offset', filters.offset.toString());
 
         const queryString = searchParams.toString();
-        const endpoint = queryString ? `/universities/?${queryString}` : '/universities/';
+        const endpoint = queryString ? `/institutions/?${queryString}` : '/institutions/';
 
         return apiClient.request<UniversityListResponse>(endpoint);
     },
 
     // Get specific university details
     getUniversity: async (universityId: number): Promise<UniversityDetailResponse> => {
-        return apiClient.request<UniversityDetailResponse>(`/universities/${universityId}/`);
+        return apiClient.request<UniversityDetailResponse>(`/institutions/${universityId}/`);
     }
 };
 

@@ -164,14 +164,17 @@ const universityAPI = {
         if (filters.offset) searchParams.append('offset', filters.offset.toString());
 
         const queryString = searchParams.toString();
-        const endpoint = queryString ? `/universities/?${queryString}` : '/universities/';
+        const endpoint = queryString ? `/institutions/?${queryString}` : '/institutions/';
 
-        return apiClient.request(endpoint);
+        console.log('🏫 Fetching institutions from:', endpoint);
+        const response = await apiClient.request(endpoint);
+        console.log('🏫 Institutions response:', response);
+        return response;
     },
 
     // Get specific university details
     getUniversity: async (universityId) => {
-        return apiClient.request(`/universities/${universityId}/`);
+        return apiClient.request(`/institutions/${universityId}/`);
     }
 };
 

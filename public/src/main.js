@@ -729,13 +729,21 @@ function UniversitySearchPage() {
         setError(null);
 
         try {
+            console.log('🔍 Loading universities with filters:', searchFilters);
             const response = await window.ScholarportAPI.universityAPI.getUniversities(searchFilters);
+            console.log('📦 Raw response:', response);
+
             if (response.success) {
-                setUniversities(response.universities || []);
+                // Backend returns 'institutions' not 'universities'
+                const institutionsList = response.institutions || response.universities || [];
+                console.log('✅ Institutions found:', institutionsList.length, institutionsList);
+                setUniversities(institutionsList);
             } else {
+                console.error('❌ Response not successful:', response);
                 throw new Error('Failed to load universities');
             }
         } catch (err) {
+            console.error('❌ Error loading universities:', err);
             setError(`Failed to load universities: ${err.message}`);
         }
 

@@ -122,22 +122,22 @@ else {
 Write-Host ""
 Write-Host "[SUCCESS] Deployment completed!" -ForegroundColor Green
 Write-Host ""
-Write-Host "🚀 Your application is now running at:" -ForegroundColor Cyan
+Write-Host "===== Your application is now running at: =====" -ForegroundColor Cyan
 Write-Host "  * http://$EC2_HOST" -ForegroundColor White
 Write-Host "  * http://13.232.108.169" -ForegroundColor White
 Write-Host ""
-Write-Host "✅ Deployment Summary:" -ForegroundColor Green
-Write-Host "  ✓ Files synced to EC2" -ForegroundColor White
-Write-Host "  ✓ Docker images rebuilt with latest code" -ForegroundColor White
-Write-Host "  ✓ Containers restarted for fresh state" -ForegroundColor White
-Write-Host "  ✓ Cache cleared automatically" -ForegroundColor White
+Write-Host "===== Deployment Summary: =====" -ForegroundColor Green
+Write-Host "  [OK] Files synced to EC2" -ForegroundColor White
+Write-Host "  [OK] Docker images rebuilt with latest code" -ForegroundColor White
+Write-Host "  [OK] Containers restarted for fresh state" -ForegroundColor White
+Write-Host "  [OK] Cache cleared automatically" -ForegroundColor White
 Write-Host ""
-Write-Host "📋 Next steps:" -ForegroundColor Yellow
-Write-Host "  1. Test the application in your browser (Hard refresh: Ctrl+Shift+R)" -ForegroundColor White
-Write-Host "  2. Configure your domain DNS to point to 13.232.108.169 (if not done)" -ForegroundColor White
-Write-Host "  3. SSH to EC2 and run: bash ~/scholarport-frontend/scripts/setup-ssl.sh (for HTTPS)" -ForegroundColor White
+Write-Host "===== Next steps: =====" -ForegroundColor Yellow
+Write-Host "  1. Test the application in your browser - Hard refresh: Ctrl+Shift+R" -ForegroundColor White
+Write-Host "  2. Configure your domain DNS to point to 13.232.108.169 - if not done" -ForegroundColor White
+Write-Host "  3. SSH to EC2 and run: bash ~/scholarport-frontend/scripts/setup-ssl.sh - for HTTPS" -ForegroundColor White
 Write-Host ""
-Write-Host "🔍 Useful commands:" -ForegroundColor Cyan
+Write-Host "===== Useful commands: =====" -ForegroundColor Cyan
 Write-Host "  View logs:          .\scripts\logs.ps1" -ForegroundColor White
 Write-Host "  Check status:       ssh -i $PEM_FILE $EC2_USER@$EC2_HOST 'sudo docker ps'" -ForegroundColor White
 Write-Host "  Restart container:  ssh -i $PEM_FILE $EC2_USER@$EC2_HOST 'sudo docker restart scholarport-frontend-prod'" -ForegroundColor White

@@ -96,7 +96,7 @@ function LandingPage() {
                         ),
                         React.createElement('p', {
                             className: 'text-sm text-gray-500'
-                        }, '✓ Free consultation ✓ AI-powered matching ✓ 243+ universities')
+                        }, '✓ Free consultation ✓ AI-powered matching ✓ 408+ universities')
                     )
                 )
             ),
@@ -113,7 +113,7 @@ function LandingPage() {
                     },
                         React.createElement('div', {
                             className: 'text-3xl font-bold text-primary-500 mb-2'
-                        }, '243+'),
+                        }, '408+'),
                         React.createElement('p', {
                             className: 'text-gray-600'
                         }, 'Partner Universities')
@@ -278,6 +278,16 @@ function ChatPage() {
                 };
 
                 setMessages(prev => [...prev, botMessage]);
+                
+                // Handle validation errors gracefully (NEW)
+                // Don't advance step on validation error - let user retry
+                if (response.validation_error) {
+                    console.log('⚠️ Validation error - keeping current step');
+                    // Keep suggestions visible for user to retry
+                    setIsLoading(false);
+                    return;
+                }
+                
                 setCurrentStep(response.current_step);
 
                 // Handle conversation completion
@@ -564,8 +574,20 @@ function ChatInput(props) {
 }
 
 // University Card Component
+// Updated: December 27, 2025 - Added Apply Now button with apply_url support
 function UniversityCard(props) {
     const { university } = props;
+
+    // Track Apply Now clicks for analytics
+    const handleApplyClick = () => {
+        if (window.ScholarportAPI && window.ScholarportAPI.analyticsUtils) {
+            window.ScholarportAPI.analyticsUtils.trackEvent('apply_now_clicked', {
+                university_name: university.name || university.university_name,
+                apply_url: university.apply_url,
+                timestamp: new Date().toISOString()
+            });
+        }
+    };
 
     return React.createElement('div', {
         className: 'bg-white rounded-lg shadow-lg p-6 hover-lift border border-gray-200'
@@ -608,8 +630,8 @@ function UniversityCard(props) {
                     className: 'text-sm text-gray-600 mb-1'
                 }, 'Popular Programs'),
                 React.createElement('p', {
-                    className: 'font-semibold'
-                }, Array.isArray(university.programs) ? university.programs.join(', ') : 'Various Programs')
+                    className: 'font-semibold text-sm'
+                }, Array.isArray(university.programs) ? university.programs.slice(0, 3).join(', ') : 'Various Programs')
             )
         ),
 
@@ -622,7 +644,7 @@ function UniversityCard(props) {
                 }, 'IELTS Requirement'),
                 React.createElement('p', {
                     className: 'font-semibold'
-                }, university.ielts_requirement || 'N/A')
+                }, university.ielts_requirement || university.ielts || 'N/A')
             ),
             React.createElement('div', {},
                 React.createElement('p', {
@@ -631,6 +653,21 @@ function UniversityCard(props) {
                 React.createElement('p', {
                     className: 'font-semibold'
                 }, university.affordability || 'Moderate')
+            )
+        ),
+
+        // Region Badge (NEW)
+        university.region && React.createElement('div', {
+            className: 'mb-4'
+        },
+            React.createElement('span', {
+                className: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'
+            },
+                React.createElement('i', {
+                    'data-lucide': 'globe',
+                    className: 'w-3 h-3 mr-1'
+                }),
+                university.region
             )
         ),
 
@@ -655,9 +692,26 @@ function UniversityCard(props) {
                 variant: 'outline',
                 size: 'sm'
             }, 'Learn More'),
-            React.createElement(Button, {
-                size: 'sm'
-            }, 'Apply Now')
+            // Apply Now Button with apply_url support (NEW)
+            university.apply_url ? 
+                React.createElement('a', {
+                    href: university.apply_url,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    onClick: handleApplyClick,
+                    className: 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gradient-to-r from-primary-500 to-indigo-600 text-white hover:from-primary-600 hover:to-indigo-700 focus:ring-primary-500 shadow-lg px-3 py-2 text-sm hover-lift'
+                }, 
+                    'Apply Now ',
+                    React.createElement('span', { className: 'ml-1' }, '↗')
+                ) :
+                React.createElement(Button, {
+                    size: 'sm',
+                    variant: 'secondary',
+                    onClick: () => {
+                        // Handle contact counselor action
+                        console.log('Contact counselor for:', university.name || university.university_name);
+                    }
+                }, 'Get Help Applying')
         )
     );
 }
@@ -710,6 +764,7 @@ function ConsentDialog(props) {
 }
 
 // University Search Page Component
+// Updated: December 27, 2025 - Added hybrid search, advanced filters, sorting, pagination
 function UniversitySearchPage() {
     const [universities, setUniversities] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -717,27 +772,64 @@ function UniversitySearchPage() {
     const [filters, setFilters] = React.useState({
         search: '',
         country: '',
+        region: '',
+        program: '',
+        affordability: '',
+        max_ielts: '',
+        sort_by: 'name',
+        sort_order: 'asc',
         limit: 12
     });
+    const [pagination, setPagination] = React.useState({
+        offset: 0,
+        total: 0,
+        hasMore: false
+    });
+    const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false);
 
     React.useEffect(() => {
         loadUniversities();
     }, []);
 
-    const loadUniversities = async (searchFilters = filters) => {
+    // Reinitialize icons when universities change
+    React.useEffect(() => {
+        if (window.lucide) {
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+    }, [universities]);
+
+    const loadUniversities = async (searchFilters = filters, resetPagination = true) => {
         setLoading(true);
         setError(null);
 
         try {
-            console.log('🔍 Loading universities with filters:', searchFilters);
-            const response = await window.ScholarportAPI.universityAPI.getUniversities(searchFilters);
+            const filtersToSend = {
+                ...searchFilters,
+                offset: resetPagination ? 0 : pagination.offset
+            };
+            
+            // Clean up empty values
+            Object.keys(filtersToSend).forEach(key => {
+                if (filtersToSend[key] === '' || filtersToSend[key] === null) {
+                    delete filtersToSend[key];
+                }
+            });
+
+            console.log('🔍 Loading universities with filters:', filtersToSend);
+            const response = await window.ScholarportAPI.universityAPI.getUniversities(filtersToSend);
             console.log('📦 Raw response:', response);
 
             if (response.success) {
-                // Backend returns 'institutions' not 'universities'
                 const institutionsList = response.institutions || response.universities || [];
                 console.log('✅ Institutions found:', institutionsList.length, institutionsList);
                 setUniversities(institutionsList);
+                
+                // Update pagination state
+                setPagination({
+                    offset: resetPagination ? 0 : pagination.offset,
+                    total: response.total_count || institutionsList.length,
+                    hasMore: response.pagination?.has_more || false
+                });
             } else {
                 console.error('❌ Response not successful:', response);
                 throw new Error('Failed to load universities');
@@ -752,8 +844,45 @@ function UniversitySearchPage() {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        loadUniversities(filters);
+        setPagination(prev => ({ ...prev, offset: 0 }));
+        loadUniversities(filters, true);
     };
+
+    const handleFilterChange = (key, value) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleNextPage = () => {
+        const newOffset = pagination.offset + filters.limit;
+        setPagination(prev => ({ ...prev, offset: newOffset }));
+        loadUniversities({ ...filters, offset: newOffset }, false);
+    };
+
+    const handlePrevPage = () => {
+        const newOffset = Math.max(0, pagination.offset - filters.limit);
+        setPagination(prev => ({ ...prev, offset: newOffset }));
+        loadUniversities({ ...filters, offset: newOffset }, false);
+    };
+
+    const clearFilters = () => {
+        const defaultFilters = {
+            search: '',
+            country: '',
+            region: '',
+            program: '',
+            affordability: '',
+            max_ielts: '',
+            sort_by: 'name',
+            sort_order: 'asc',
+            limit: 12
+        };
+        setFilters(defaultFilters);
+        setPagination({ offset: 0, total: 0, hasMore: false });
+        loadUniversities(defaultFilters, true);
+    };
+
+    const currentPage = Math.floor(pagination.offset / filters.limit) + 1;
+    const totalPages = Math.ceil(pagination.total / filters.limit);
 
     return React.createElement('div', {
         className: 'min-h-screen flex flex-col'
@@ -769,36 +898,142 @@ function UniversitySearchPage() {
             React.createElement('div', {
                 className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
             },
-                React.createElement('h1', {
-                    className: 'text-3xl font-bold text-gray-900 mb-8'
-                }, 'Explore Universities'),
+                // Page Header
+                React.createElement('div', {
+                    className: 'flex justify-between items-center mb-8'
+                },
+                    React.createElement('div', {},
+                        React.createElement('h1', {
+                            className: 'text-3xl font-bold text-gray-900'
+                        }, 'Explore Universities'),
+                        React.createElement('p', {
+                            className: 'text-gray-600 mt-1'
+                        }, `${pagination.total} universities available`)
+                    ),
+                    React.createElement(Button, {
+                        variant: 'outline',
+                        size: 'sm',
+                        onClick: () => setShowAdvancedFilters(!showAdvancedFilters)
+                    }, showAdvancedFilters ? 'Hide Filters' : 'Advanced Filters')
+                ),
 
-                // Search Filters
+                // Search & Filters Form
                 React.createElement('form', {
                     onSubmit: handleSearch,
                     className: 'bg-white rounded-lg shadow p-6 mb-8'
                 },
+                    // Basic Search Row - All inputs and buttons on same row
                     React.createElement('div', {
-                        className: 'grid grid-cols-1 md:grid-cols-3 gap-4'
+                        className: 'flex flex-col lg:flex-row gap-4 mb-4'
+                    },
+                        // Search Input - Takes more space
+                        React.createElement('input', {
+                            type: 'text',
+                            placeholder: 'Search universities, programs, cities...',
+                            value: filters.search,
+                            onChange: (e) => handleFilterChange('search', e.target.value),
+                            className: 'flex-1 lg:flex-[2] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
+                        }),
+                        // Region Dropdown
+                        React.createElement('select', {
+                            value: filters.region,
+                            onChange: (e) => handleFilterChange('region', e.target.value),
+                            className: 'flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white'
+                        },
+                            React.createElement('option', { value: '' }, 'All Regions'),
+                            React.createElement('option', { value: 'Europe' }, 'Europe (254)'),
+                            React.createElement('option', { value: 'North America' }, 'North America (118)'),
+                            React.createElement('option', { value: 'Asia' }, 'Asia (15)'),
+                            React.createElement('option', { value: 'Oceania' }, 'Oceania (10)'),
+                            React.createElement('option', { value: 'Africa' }, 'Africa (6)'),
+                            React.createElement('option', { value: 'Latin America' }, 'Latin America (4)')
+                        ),
+                        // Budget Dropdown
+                        React.createElement('select', {
+                            value: filters.affordability,
+                            onChange: (e) => handleFilterChange('affordability', e.target.value),
+                            className: 'flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white'
+                        },
+                            React.createElement('option', { value: '' }, 'All Budgets'),
+                            React.createElement('option', { value: 'Free' }, 'Free'),
+                            React.createElement('option', { value: 'Very Affordable' }, 'Very Affordable'),
+                            React.createElement('option', { value: 'Affordable' }, 'Affordable'),
+                            React.createElement('option', { value: 'Moderate' }, 'Moderate'),
+                            React.createElement('option', { value: 'Expensive' }, 'Expensive'),
+                            React.createElement('option', { value: 'Very Expensive' }, 'Very Expensive')
+                        ),
+                        // Action Buttons - Aligned on same row
+                        React.createElement('div', {
+                            className: 'flex gap-2 lg:gap-2'
+                        },
+                            React.createElement(Button, {
+                                type: 'submit',
+                                disabled: loading,
+                                className: 'flex-1 lg:flex-none lg:min-w-[100px]'
+                            }, loading ? 'Searching...' : 'Search'),
+                            React.createElement(Button, {
+                                type: 'button',
+                                variant: 'outline',
+                                onClick: clearFilters,
+                                className: 'flex-1 lg:flex-none lg:min-w-[120px]'
+                            }, 'Clear Filters')
+                        )
+                    ),
+
+                    // Advanced Filters (Collapsible)
+                    showAdvancedFilters && React.createElement('div', {
+                        className: 'grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 pt-4 border-t border-gray-200'
                     },
                         React.createElement('input', {
                             type: 'text',
-                            placeholder: 'Search universities...',
-                            value: filters.search,
-                            onChange: (e) => setFilters({ ...filters, search: e.target.value }),
+                            placeholder: 'Country (e.g., UK, USA)',
+                            value: filters.country,
+                            onChange: (e) => handleFilterChange('country', e.target.value),
                             className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
                         }),
                         React.createElement('input', {
                             type: 'text',
-                            placeholder: 'Country (e.g., USA, Canada)...',
-                            value: filters.country,
-                            onChange: (e) => setFilters({ ...filters, country: e.target.value }),
+                            placeholder: 'Program (e.g., Computer Science)',
+                            value: filters.program,
+                            onChange: (e) => handleFilterChange('program', e.target.value),
                             className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
                         }),
-                        React.createElement(Button, {
-                            type: 'submit',
-                            disabled: loading
-                        }, loading ? 'Searching...' : 'Search')
+                        React.createElement('input', {
+                            type: 'number',
+                            placeholder: 'Max IELTS (e.g., 6.5)',
+                            step: '0.5',
+                            min: '4',
+                            max: '9',
+                            value: filters.max_ielts,
+                            onChange: (e) => handleFilterChange('max_ielts', e.target.value),
+                            className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500'
+                        }),
+                        React.createElement('select', {
+                            value: filters.sort_by,
+                            onChange: (e) => handleFilterChange('sort_by', e.target.value),
+                            className: 'border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white'
+                        },
+                            React.createElement('option', { value: 'name' }, 'Sort by Name'),
+                            React.createElement('option', { value: 'country' }, 'Sort by Country'),
+                            React.createElement('option', { value: 'ranking' }, 'Sort by Ranking')
+                        )
+                    ),
+
+                    // Sort Order Toggle (Only visible when advanced filters are shown)
+                    showAdvancedFilters && React.createElement('div', {
+                        className: 'flex justify-end pt-2'
+                    },
+                        React.createElement('button', {
+                            type: 'button',
+                            onClick: () => handleFilterChange('sort_order', filters.sort_order === 'asc' ? 'desc' : 'asc'),
+                            className: 'flex items-center text-gray-600 hover:text-primary-500 transition-colors'
+                        },
+                            React.createElement('i', {
+                                'data-lucide': filters.sort_order === 'asc' ? 'arrow-up' : 'arrow-down',
+                                className: 'w-4 h-4 mr-1'
+                            }),
+                            filters.sort_order === 'asc' ? 'Ascending' : 'Descending'
+                        )
                     )
                 ),
 
@@ -824,13 +1059,46 @@ function UniversitySearchPage() {
                     )
                 ),
 
+                // Pagination Controls
+                universities.length > 0 && React.createElement('div', {
+                    className: 'flex justify-center items-center space-x-4 py-6'
+                },
+                    React.createElement(Button, {
+                        variant: 'outline',
+                        size: 'sm',
+                        disabled: pagination.offset === 0,
+                        onClick: handlePrevPage
+                    }, '← Previous'),
+                    React.createElement('span', {
+                        className: 'text-gray-600'
+                    }, `Page ${currentPage} of ${totalPages || 1}`),
+                    React.createElement(Button, {
+                        variant: 'outline',
+                        size: 'sm',
+                        disabled: !pagination.hasMore,
+                        onClick: handleNextPage
+                    }, 'Next →')
+                ),
+
                 // No results
                 !loading && universities.length === 0 && !error && React.createElement('div', {
                     className: 'text-center py-12'
                 },
-                    React.createElement('p', {
-                        className: 'text-gray-600 text-lg'
-                    }, 'No universities found. Try adjusting your search criteria.')
+                    React.createElement('div', {
+                        className: 'max-w-md mx-auto'
+                    },
+                        React.createElement('i', {
+                            'data-lucide': 'search-x',
+                            className: 'w-16 h-16 text-gray-300 mx-auto mb-4'
+                        }),
+                        React.createElement('p', {
+                            className: 'text-gray-600 text-lg mb-4'
+                        }, 'No universities found matching your criteria.'),
+                        React.createElement(Button, {
+                            variant: 'outline',
+                            onClick: clearFilters
+                        }, 'Clear Filters & Try Again')
+                    )
                 )
             )
         ),

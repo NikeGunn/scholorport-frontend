@@ -1,4 +1,6 @@
 // Chat related types based on API schema
+import { University } from './university';
+
 export interface Message {
     id: string;
     type: 'user' | 'bot';

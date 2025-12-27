@@ -121,14 +121,31 @@ export const chatAPI = {
 };
 
 // University API endpoints
+// Updated: December 27, 2025 - Backend Version 2.0.0 with hybrid search
 export const universityAPI = {
-    // Get all universities with optional filtering
+    // Get all universities with optional filtering (supports hybrid search)
     getUniversities: async (filters: UniversityFilters = {}): Promise<UniversityListResponse> => {
         const searchParams = new URLSearchParams();
 
-        if (filters.country) searchParams.append('country', filters.country);
+        // Basic filters
         if (filters.search) searchParams.append('search', filters.search);
+        if (filters.country) searchParams.append('country', filters.country);
+        if (filters.city) searchParams.append('city', filters.city);
+        
+        // NEW: Advanced filters
+        if (filters.region) searchParams.append('region', filters.region);
+        if (filters.program) searchParams.append('program', filters.program);
+        if (filters.affordability) searchParams.append('affordability', filters.affordability);
+        if (filters.max_ielts) searchParams.append('max_ielts', filters.max_ielts.toString());
+        if (filters.max_toefl) searchParams.append('max_toefl', filters.max_toefl.toString());
         if (filters.max_tuition) searchParams.append('max_tuition', filters.max_tuition);
+        if (filters.top_ranking) searchParams.append('top_ranking', filters.top_ranking.toString());
+        
+        // NEW: Sorting
+        if (filters.sort_by) searchParams.append('sort_by', filters.sort_by);
+        if (filters.sort_order) searchParams.append('sort_order', filters.sort_order);
+        
+        // Pagination
         if (filters.limit) searchParams.append('limit', filters.limit.toString());
         if (filters.offset) searchParams.append('offset', filters.offset.toString());
 

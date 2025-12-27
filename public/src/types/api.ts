@@ -1,7 +1,8 @@
-import { University } from './university';
+import { University, PaginationInfo } from './university';
 import { StudentData } from './chat';
 
 // API Request/Response types based on Django backend schema
+// Updated: December 27, 2025 - Backend Version 2.0.0
 export interface APIResponse<T> {
     success: boolean;
     data?: T;
@@ -44,6 +45,7 @@ export interface ChatResponse {
     recommendations?: University[];
     ai_insights?: string;
     profile_id?: number;
+    validation_error?: boolean;  // NEW: Input validation error flag
 }
 
 export interface ConsentRequest {
@@ -59,15 +61,19 @@ export interface ConsentResponse {
     recommendations_available?: boolean;
 }
 
+// Updated to match new API response structure
 export interface UniversityListResponse {
     success: boolean;
-    universities: University[];
+    institutions: University[];      // Primary field from API
+    universities?: University[];     // Legacy support
     total_count: number;
+    pagination: PaginationInfo;      // NEW: Pagination metadata
 }
 
 export interface UniversityDetailResponse {
     success: boolean;
-    university: University;
+    institution: University;         // Primary field from API
+    university?: University;         // Legacy support
 }
 
 export interface SaveStudentRequest extends StudentData {

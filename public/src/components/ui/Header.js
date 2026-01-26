@@ -1,7 +1,7 @@
 // Header component for Scholarport
 function Header(props) {
     const { showBackButton = false, onBack } = props;
-  
+
     return React.createElement('header', {
         className: 'bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 py-3'
     },
@@ -27,7 +27,7 @@ function Header(props) {
                     // Logo and brand
                     React.createElement('a', {href:"/", className: 'flex items-center' },
                         React.createElement('img', {
-                            src: "./image/mainLogo.png" ,
+                            src: "/image/mainLogo.png" ,
                             alt: 'Scholarport logo',
                             className: 'h-11 w-auto object-cover'
                         })

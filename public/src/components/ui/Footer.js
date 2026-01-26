@@ -5,7 +5,7 @@ function Footer() {
     // Coming Soon Badge Component - Minimal style matching brand
     const ComingSoonBadge = () => React.createElement('span', {
         className: 'inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-primary-50 text-primary-600 ml-2 border border-primary-100'
-    }, 
+    },
         React.createElement('span', {
             className: 'w-1 h-1 bg-primary-400 rounded-full mr-1'
         }),
@@ -31,7 +31,7 @@ function Footer() {
                         className: 'flex items-center mb-4'
                     },
                         React.createElement('img', {
-                            src: './image/mainLogo.png',
+                            src: '/image/mainLogo.png',
                             alt: 'Scholarport logo',
                             className: 'h-9 w-auto object-cover'
                         })

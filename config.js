@@ -1,6 +1,6 @@
 // Environment Configuration for Scholarport Frontend
 // This file determines which API base URL to use based on the environment
-// UPDATED: 2025-10-07 - Backend URL: ec2-43-205-95-162 (NEW BACKEND)
+// UPDATED: 2026-01-27 - Backend URL: ec2-65-1-127-116 (CURRENT BACKEND)
 
 (function() {
     'use strict';
@@ -18,7 +18,7 @@
     const useHTTPS = protocol === 'https:' || isCustomDomain;
 
     // API Configuration
-    // Use nginx proxy when on custom domain to avoid SSL certificate issues
+    // CRITICAL: Use same-origin proxy when on custom domain to avoid CORS and SSL issues
     const API_CONFIG = {
         development: {
             BASE_URL: 'http://127.0.0.1:8000/api/chat',
@@ -26,19 +26,16 @@
             ENV: 'development'
         },
         production: {
-            // Use nginx proxy on custom domain, direct URL when on IP
-            BASE_URL: isCustomDomain
-                ? `${protocol}//${hostname}/api/chat`
-                : 'https://43.205.95.162/api/chat',
-            WS_URL: isCustomDomain
-                ? `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`
-                : 'wss://43.205.95.162/ws',
+            // ALWAYS use same-origin API calls via nginx proxy
+            // This prevents CORS issues and connection resets
+            BASE_URL: `${protocol}//${hostname}/api/chat`,
+            WS_URL: `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`,
             ENV: 'production',
-            BACKEND_IP: '43.205.95.162',
-            BACKEND_HOST: isCustomDomain ? hostname : '43.205.95.162',
-            FRONTEND_DOMAIN: isCustomDomain ? hostname : null,
+            BACKEND_IP: '65.1.127.116',  // Updated to current server
+            BACKEND_HOST: hostname,
+            FRONTEND_DOMAIN: hostname,
             USE_HTTPS: useHTTPS,
-            USE_PROXY: isCustomDomain
+            USE_PROXY: true  // Always use nginx proxy
         }
     };
 
@@ -51,19 +48,17 @@
     if (useHTTPS) {
         console.log('%c🔒 HTTPS Enabled - Secure connection active', 'color: #00B050; font-size: 14px; font-weight: bold;');
     }
-    if (isCustomDomain) {
-        console.log('%c🌐 Custom Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
-        if (currentConfig.USE_PROXY) {
-            console.log('%c🔄 Using Nginx Proxy - Avoiding SSL certificate issues', 'color: #0066CC; font-size: 14px; font-weight: bold;');
-        }
+    if (!isLocalhost) {
+        console.log('%c🌐 Domain: ' + hostname, 'color: #0066CC; font-size: 14px; font-weight: bold;');
+        console.log('%c🔄 Using Nginx Proxy - All requests routed through same origin', 'color: #0066CC; font-size: 14px; font-weight: bold;');
     }
 
-    // Alert if using old backend
-    if (currentConfig.BASE_URL && currentConfig.BASE_URL.includes('13-203-155-163')) {
+    // Alert if using any old backend (should not happen with new config)
+    const oldBackends = ['13-203-155-163', '13.203.155.163', '43-205-95-162', '43.205.95.162'];
+    const isOldBackend = oldBackends.some(ip => currentConfig.BASE_URL && currentConfig.BASE_URL.includes(ip));
+    if (isOldBackend) {
         console.error('%c⚠️ WARNING: USING OLD BACKEND! Config not updated!', 'color: red; font-size: 20px; font-weight: bold; background: yellow;');
-        alert('⚠️ CRITICAL: Using OLD backend (13.203.155.163). Please contact support!');
-    } else if (currentConfig.BASE_URL && currentConfig.BASE_URL.includes('43-205-95-162')) {
-        console.log('%c✅ Using CORRECT NEW backend: 43.205.95.162', 'color: green; font-size: 14px; font-weight: bold;');
+        alert('⚠️ CRITICAL: Using OLD backend! Clear cache and refresh. Current server: 65.1.127.116');
     }
 
     // Expose configuration globally
@@ -71,9 +66,10 @@
         API_BASE_URL: currentConfig.BASE_URL,
         WS_URL: currentConfig.WS_URL,
         ENV: currentConfig.ENV,
-        VERSION: '1.0.0',
+        VERSION: '2.0.0',  // Version bump for config changes
         IS_DEVELOPMENT: isLocalhost,
-        IS_PRODUCTION: !isLocalhost
+        IS_PRODUCTION: !isLocalhost,
+        BUILD_DATE: '2026-01-27'
     };
 
     // Freeze configuration to prevent modifications

@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: 50px auto;
       padding: 20px;
       background: #f5f5f5;
@@ -55,6 +55,7 @@
       padding: 15px;
       border-radius: 4px;
       overflow-x: auto;
+      font-size: 12px;
     }
 
     button {
@@ -72,14 +73,52 @@
       background: #0052A3;
     }
 
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
     #result {
       margin-top: 20px;
+    }
+
+    .test-item {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+      background: #f9f9f9;
+    }
+
+    .test-item.pass {
+      background: #d4edda;
+      border-left: 4px solid #00B050;
+    }
+
+    .test-item.fail {
+      background: #f8d7da;
+      border-left: 4px solid #DC3545;
+    }
+
+    .test-item.pending {
+      background: #fff3cd;
+      border-left: 4px solid #FF9500;
     }
   </style>
 </head>
 
 <body>
-  <h1>🔧 Backend Diagnostic Tool</h1>
+  <h1>🔧 Scholarport Diagnostic Tool v2.0</h1>
+
+  <div class="card">
+    <h2>🌐 Environment Info</h2>
+    <div id="env-info">Loading...</div>
+  </div>
+
+  <div class="card">
+    <h2>📁 Static File Loading Test</h2>
+    <button onclick="testStaticFiles()">Test All Static Files</button>
+    <div id="static-result"></div>
+  </div>
 
   <div class="card">
     <h2>Configuration Check</h2>
@@ -88,14 +127,17 @@
 
   <div class="card">
     <h2>Expected Backend</h2>
-    <p class="success">✅ NEW: ec2-43-205-95-162.ap-south-1.compute.amazonaws.com (43.205.95.162)</p>
-    <p class="error">❌ OLD: ec2-13-203-155-163.ap-south-1.compute.amazonaws.com (13.203.155.163)</p>
+    <p class="success">✅ CURRENT: 65.1.127.116 (Single Unified Server)</p>
+    <p class="error">❌ OLD: 43.205.95.162 (Removed - Old Instance)</p>
+    <p class="error">❌ OLD: 13.203.155.163 (Removed - Old Instance)</p>
+    <p class="info">ℹ️ Using same-origin proxy via nginx (no direct IP access)</p>
   </div>
 
   <div class="card">
     <h2>API Connection Test</h2>
     <button onclick="testBackend()">Test Backend Connection</button>
     <button onclick="testHealth()">Test Health Endpoint</button>
+    <button onclick="runFullDiagnostic()">Run Full Diagnostic</button>
     <div id="result"></div>
   </div>
 
@@ -110,7 +152,7 @@
   </div>
 
   <!-- Load config.js -->
-  <script src="./config.js?v=2025-10-07-diagnostic"></script>
+  <script src="./config.js?v=2026-01-27-unified"></script>
 
   <script>
     // Display config check
@@ -130,14 +172,20 @@
       html += `<p><strong>API Base URL:</strong></p>`;
       html += `<pre>${apiUrl}</pre>`;
 
-      // Check which backend
-      if (apiUrl.includes('43-205-95-162') || apiUrl.includes('43.205.95.162')) {
-        html += '<p class="success">✅ Using CORRECT NEW backend!</p>';
+      // Check which backend - current setup uses same-origin proxy via nginx
+      if (apiUrl.includes('65-1-127-116') || apiUrl.includes('65.1.127.116')) {
+        html += '<p class="success">✅ Using CORRECT backend (65.1.127.116)!</p>';
+      } else if (apiUrl.includes('43-205-95-162') || apiUrl.includes('43.205.95.162')) {
+        html += '<p class="error">❌ Using OLD backend (43.205)! Config cached!</p>';
+        html += '<p class="warning">⚠️ Clear browser cache and refresh!</p>';
       } else if (apiUrl.includes('13-203-155-163') || apiUrl.includes('13.203.155.163')) {
-        html += '<p class="error">❌ Using OLD backend! Config cached!</p>';
+        html += '<p class="error">❌ Using OLD backend (13.203)! Config cached!</p>';
         html += '<p class="warning">⚠️ Clear browser cache and refresh!</p>';
       } else if (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1')) {
         html += '<p class="warning">⚠️ Using localhost (development mode)</p>';
+      } else if (apiUrl.includes('chat.scholarport.co') || apiUrl.includes('/api/chat')) {
+        html += '<p class="success">✅ Using same-origin proxy (CORRECT - recommended setup)!</p>';
+        html += '<p class="info">ℹ️ Requests proxied through nginx to 65.1.127.116</p>';
       } else {
         html += '<p class="warning">⚠️ Unknown backend configuration</p>';
       }
@@ -212,8 +260,112 @@
       }
     }
 
+    // Display environment info
+    function displayEnvInfo() {
+      const envDiv = document.getElementById('env-info');
+      let html = '<table style="width:100%">';
+      html += `<tr><td><strong>Hostname:</strong></td><td>${window.location.hostname}</td></tr>`;
+      html += `<tr><td><strong>Protocol:</strong></td><td>${window.location.protocol}</td></tr>`;
+      html += `<tr><td><strong>Port:</strong></td><td>${window.location.port || '(default)'}</td></tr>`;
+      html += `<tr><td><strong>User Agent:</strong></td><td style="font-size:11px">${navigator.userAgent}</td></tr>`;
+      html += `<tr><td><strong>Time:</strong></td><td>${new Date().toISOString()}</td></tr>`;
+      html += '</table>';
+      envDiv.innerHTML = html;
+    }
+
+    // Test static file loading
+    async function testStaticFiles() {
+      const resultDiv = document.getElementById('static-result');
+      resultDiv.innerHTML = '<p class="info">Testing static files...</p>';
+
+      const files = [
+        { name: 'config.js', path: './config.js' },
+        { name: 'api.js', path: './src/services/api.js' },
+        { name: 'Button.js', path: './src/components/ui/Button.js' },
+        { name: 'Header.js', path: './src/components/ui/Header.js' },
+        { name: 'Footer.js', path: './src/components/ui/Footer.js' },
+        { name: 'Components.js', path: './src/components/ui/Components.js' },
+        { name: 'main.js', path: './src/main.js' }
+      ];
+
+      let html = '<div style="margin-top:15px">';
+
+      for (const file of files) {
+        try {
+          const response = await fetch(file.path + '?t=' + Date.now());
+          const status = response.status;
+          const ok = response.ok;
+
+          html += `<div class="test-item ${ok ? 'pass' : 'fail'}">`;
+          html += `<strong>${file.name}:</strong> `;
+          html += `<span class="${ok ? 'success' : 'error'}">${status} ${response.statusText}</span>`;
+
+          if (!ok) {
+            html += ` <span class="error">(${response.status === 403 ? 'FORBIDDEN - Check Nginx config' : 'Check file exists'})</span>`;
+          }
+          html += '</div>';
+        } catch (err) {
+          html += `<div class="test-item fail">`;
+          html += `<strong>${file.name}:</strong> <span class="error">FAILED - ${err.message}</span>`;
+          html += '</div>';
+        }
+      }
+
+      html += '</div>';
+      resultDiv.innerHTML = html;
+    }
+
+    // Run full diagnostic
+    async function runFullDiagnostic() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p class="info">Running full diagnostic...</p>';
+
+      let html = '<h3>Full Diagnostic Results</h3>';
+
+      // Test 1: API Health
+      html += '<h4>1. API Health Check</h4>';
+      try {
+        const healthResp = await fetch('/health');
+        html += `<div class="test-item ${healthResp.ok ? 'pass' : 'fail'}">`;
+        html += `Nginx Health: ${healthResp.ok ? '✅ OK' : '❌ FAILED'} (${healthResp.status})`;
+        html += '</div>';
+      } catch (e) {
+        html += `<div class="test-item fail">Nginx Health: ❌ ${e.message}</div>`;
+      }
+
+      // Test 2: API Proxy
+      html += '<h4>2. API Proxy Test</h4>';
+      try {
+        const apiResp = await fetch('/api/chat/health/');
+        html += `<div class="test-item ${apiResp.ok ? 'pass' : 'fail'}">`;
+        html += `API Proxy: ${apiResp.ok ? '✅ OK' : '❌ FAILED'} (${apiResp.status})`;
+        html += '</div>';
+      } catch (e) {
+        html += `<div class="test-item fail">API Proxy: ❌ ${e.message}</div>`;
+      }
+
+      // Test 3: Static file loading
+      html += '<h4>3. Static File Test</h4>';
+      try {
+        const jsResp = await fetch('./src/services/api.js?t=' + Date.now());
+        html += `<div class="test-item ${jsResp.ok ? 'pass' : 'fail'}">`;
+        html += `JS Files: ${jsResp.ok ? '✅ OK' : '❌ FAILED'} (${jsResp.status})`;
+        if (!jsResp.ok && jsResp.status === 403) {
+          html += ' <strong class="error">Rate Limiting or Permission Issue!</strong>';
+        }
+        html += '</div>';
+      } catch (e) {
+        html += `<div class="test-item fail">JS Files: ❌ ${e.message}</div>`;
+      }
+
+      resultDiv.innerHTML = html;
+    }
+
     // Run on page load
-    window.addEventListener('load', displayConfig);
+    window.addEventListener('load', () => {
+      displayConfig();
+      displayEnvInfo();
+    });
   </script>
 </body>
 

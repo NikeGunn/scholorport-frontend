@@ -31,7 +31,7 @@
             BASE_URL: `${protocol}//${hostname}/api/chat`,
             WS_URL: `${protocol === 'https:' ? 'wss:' : 'ws:'}//${hostname}/ws`,
             ENV: 'production',
-            BACKEND_IP: '65.1.127.116',  // Updated to current server
+            BACKEND_IP: '43.157.39.193',  // Updated to current server
             BACKEND_HOST: hostname,
             FRONTEND_DOMAIN: hostname,
             USE_HTTPS: useHTTPS,
